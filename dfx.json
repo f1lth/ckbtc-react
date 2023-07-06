@@ -18,15 +18,6 @@
           "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
         }
       }
-    },
-    "auth_client_demo_assets": {
-      "dependencies": [
-        "whoami"
-      ],
-      "source": [
-        "src/auth_client_demo_assets/vue/dist"
-      ],
-      "type": "assets"
     }
   },
   "defaults": {

@@ -17,10 +17,10 @@ function LoggedIn() {
   };
 
   return (
+    
     <div className="container">
-      <h1>Internet Identity Client</h1>
-      <h2>You are authenticated!</h2>
-      <p>To see how a canister views you, click this button!</p>
+      <h1>Storefront Manager</h1>
+      <p>Monitor incoming payments and setup your store</p>
       <button
         type="button"
         id="whoamiButton"
