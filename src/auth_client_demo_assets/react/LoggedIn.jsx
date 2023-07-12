@@ -116,7 +116,8 @@ function LoggedIn() {
         return <Send
           goBack={goBack}/>
       case 'edit':
-        return <h1>edit</h1>
+        return <EditStore
+        goBack={goBack}/>
       default:
         return null;
     }
