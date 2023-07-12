@@ -3,8 +3,6 @@ import { useAuth } from "./use-auth-client";
 import Recieve from "./Recieve";
 import Send from "./Send";
 
-import base32Encode from 'base32-encode';
-
 import { fetchTransactions }from "./utils";
 
 
