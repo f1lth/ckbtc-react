@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useAuth } from './use-auth-client';
+
 const WALLET_PATTERN = /^(([a-zA-Z0-9]{5}-){4}|([a-zA-Z0-9]{5}-){10})[a-zA-Z0-9]{3}(-[a-zA-Z0-9]{7}\.[a-fA-F0-9]{1,64})?$/;
 
 const whoamiStyles = {
@@ -16,23 +18,44 @@ const logoStyles = {
 function EditStore({ goBack }) {
   const [name, setName] = React.useState("");
   const [alertEmail, setAlertEmail] = React.useState("");
-  const [wallet, setWallet] = React.useState("");
+  const [principal, setPrincipal] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [isValid, setIsValid] = React.useState(true); // State variable for input validity
 
+  const { whoamiActor, logout } = useAuth();
 
 
-  const   updateStore = async  () => {
+
+  const updateStore = async  () => {
     // call to backend
+    const whoami = await whoamiActor.whoami();
+    
+    const walletAddress = {
+      enabled: true, 
+      address: principal,
+      token_name: 'ckBTC'
+    }
+    const chanl = {
+      key : 'a',
+      url : 'a',
+      service : 'a',
+      interval : 69421,
+      enabled : true,
+    }
+    const newStore = {
+      updated_at: Date.now(),
+      owner: whoami,
+      wallets: walletAddress,
+      notification_channels: [chanl]
+    }
+   
+    console.log('new store from update', newStore)
     // open a modal when the store is updated
     console.log('updated store')
+    const thing = await whoamiActor.addCheckout(newStore);
+    console.log(thing)
   }
     
-
-  
-
-
-
   return (
     <div className="container">
       <h2>Edit store profile</h2>
@@ -50,8 +73,8 @@ function EditStore({ goBack }) {
           />
           <input
             placeholder="Update wallet"
-            value={wallet}
-            onChange={(e) => setWallet(e.target.value)}
+            value={principal}
+            onChange={(e) => setPrincipal(e.target.value)}
           />
           <button type="button" id="addressButton" onClick={updateStore}>
             Save

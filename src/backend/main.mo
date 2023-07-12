@@ -84,8 +84,9 @@ shared( init_owner ) actor class PaymentWatcher() {
     };
 
     if(isAnon){
-      anonCheckoutStorage.add(clone);
-      return #ok("added anon profile");
+      //anonCheckoutStorage.add(clone);
+      //return #ok("added anon profile");
+      return #err("no anon carts - login");
     }else{      
       if(caller != checkoutProfile.owner){
         return #err("invalid principal - please login");
@@ -129,7 +130,7 @@ shared( init_owner ) actor class PaymentWatcher() {
 
   public shared query ({ caller }) func getCheckouts() : async [CheckoutProfile] {
       let b = Buffer.Buffer<CheckoutProfile>(10);
-      b.append(anonCheckoutStorage);
+      //b.append(anonCheckoutStorage);
       b.append(checkoutStorage); //filter for caller?
       return Iter.toArray(b.vals());
   };

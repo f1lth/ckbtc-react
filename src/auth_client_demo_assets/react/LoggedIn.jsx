@@ -31,6 +31,12 @@ const whoamiStyles = {
   marginBottom: "1rem",
 };
 
+const logoStyles = {
+  flex: "0 0 auto",
+  width: "34px",
+  height: "20px",
+};
+
 function LoggedIn() {
   const [activeComponent, setActiveComponent] = React.useState('default');
   const [address, setAddress] = React.useState(""); // State variable for the fetched data
@@ -44,7 +50,11 @@ function LoggedIn() {
 
     const fetch = async () => {
       const whoami = await whoamiActor.whoami();
+
+      const store = await whoamiActor.getCheckouts();
+      console.log(store)
       const fetchedData = await fetchTransactions(whoami.toString(), TRANSACTION_LIMIT);
+      console.log('fake local login', whoami.toString())
       setAddress(whoami.toString())
       setData(fetchedData);
     }
@@ -75,7 +85,7 @@ function LoggedIn() {
         <button id="send" onClick={() => setActiveComponent('send')} > Send ckBTC </button>
         <button id="edit" onClick={() => setActiveComponent('edit')} > Edit store profile </button>
         <button id="logout" onClick={logout}>
-          log out
+          Log out
         </button></div>
           
       case 'recieve':
