@@ -5,7 +5,7 @@ module Types {
     public type CheckoutProfile = {
         owner: Principal;    
         updated_at: Int;    
-        wallets: [WalletAddress];
+        wallets: WalletAddress;
         notification_channels: [NotificationChannel];
     };
 

@@ -1,6 +1,6 @@
 import { AuthClient } from "@dfinity/auth-client";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { canisterId, createActor } from "../../declarations/whoami";
+import { canisterId, createActor } from "../../declarations/backend";
 
 const AuthContext = createContext();
 

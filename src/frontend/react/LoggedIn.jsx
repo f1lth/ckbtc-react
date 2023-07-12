@@ -2,8 +2,13 @@ import React from "react";
 import { useAuth } from "./use-auth-client";
 import Recieve from "./Recieve";
 import Send from "./Send";
+import EditStore from "./EditStore";
+
+import icLogo from "./assets/ic.png";
 
 import { fetchTransactions }from "./utils";
+
+import { Principal } from "@dfinity/principal";
 
 
 
@@ -39,21 +44,15 @@ function LoggedIn() {
 
     const fetch = async () => {
       const whoami = await whoamiActor.whoami();
-
-      console.log('inside fetch', whoami);
-      console.log('inside fetch333', JSON.stringify(whoami))
-      const temp_array = new Uint8Array(whoami._arr);
-      const temp_address = base32Encode(temp_array, 'RFC4648-HEX').toLowerCase();
-      console.log('inside fetch2', temp_address)
-      setAddress(temp_address)
-      const fetchedData = await fetchTransactions(temp_address, TRANSACTION_LIMIT);
+      const fetchedData = await fetchTransactions(whoami.toString(), TRANSACTION_LIMIT);
+      setAddress(whoami.toString())
       setData(fetchedData);
-      console.log(fetchedData);
     }
     fetch()
     .catch(console.error)
   }, []);
     
+
   function displayTransactions () {
     setShowTransactions(!showTransactions);
   }
@@ -62,39 +61,16 @@ function LoggedIn() {
     setActiveComponent('default')
   }
   
-  const handleClick = async () => {
-    const whoami = await whoamiActor.whoami();
-    console.log('who am i ??', whoami);
-    setResult(whoami);
-  };
 
   const renderComponent = () => {
     switch (activeComponent) {
       case 'default':
         return <div className='container'> <h1>Storefront Manager</h1>
+        <div className='rowContainer'>
+          <img src={icLogo} alt="Internet Computer Logo" style={logoStyles} />
+          <h3>ckBTC: {address.slice(0, 4) + "..."}</h3>
+        </div>
         <p>Monitor incoming payments and setup your store</p>
-        <button
-          type="button"
-          id="whoamiButton"
-          className="primary"
-          onClick={handleClick}
-        >
-          Who am I?
-        </button>
-        {result && (
-        <><h1>{JSON.stringify(result)}</h1>
-        <input
-          value={result}
-        /></>
-        )}
-        <input
-          type="text"
-          readOnly
-          id="whoami"
-          value={result}
-          placeholder="your Identity"
-          style={whoamiStyles}
-        />
         <button id="recieve" onClick={() => setActiveComponent('recieve')} > Recieve ckBTC </button>
         <button id="send" onClick={() => setActiveComponent('send')} > Send ckBTC </button>
         <button id="edit" onClick={() => setActiveComponent('edit')} > Edit store profile </button>

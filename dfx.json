@@ -1,7 +1,7 @@
 {
   "canisters": {
-    "whoami": {
-      "main": "src/whoami/main.mo",
+    "backend": {
+      "main": "src/backend/main.mo",
       "type": "motoko",
       "declarations": {
         "node_compatibility": true

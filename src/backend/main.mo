@@ -156,5 +156,6 @@ shared( init_owner ) actor class PaymentWatcher() {
   public query func greet(name : Text) : async Text {
     return "Hello, max this is your input: " # name # "!";
   };
+
   
 };
