@@ -9,10 +9,9 @@ import Principal "mo:base/Principal";
 import Types "Types";
 import Watcher "Watcher";
 
-/// Simple actor to allow a user to monitor a token address for activity
-/// Anon users can setup a quick watcher but will not be persisted 
+/// Simple ICP / ckBTC Checkout
 /// Registered users can keep a profile and load saved addressess and notification channels
-shared( init_owner ) actor class PaymentWatcher() {
+shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
 
   type CheckoutProfile = Types.CheckoutProfile;
   type NotificationChannel = Types.NotificationChannel;  
@@ -20,17 +19,20 @@ shared( init_owner ) actor class PaymentWatcher() {
   private let CONFIG_TEST_MODE : Bool = true;
   private let OWNER : Principal = init_owner.caller;
 
+  stable var keepers : ?[Principal] = init_signers; //if provided during install, these principals have admin access
   stable var data_backup : [CheckoutProfile] = [];
   var checkoutStorage = Buffer.fromIter<CheckoutProfile>(data_backup.vals());
   var anonCheckoutStorage = Buffer.Buffer<CheckoutProfile>(1);
+  var keeperStorage = Buffer.Buffer<Principal>(5);
 
   system func preupgrade() {
     data_backup := Iter.toArray(checkoutStorage.vals());
+    keepers := ?Iter.toArray(keeperStorage.vals());
   };
 
   system func postupgrade() {
     data_backup := [];
-  };  
+  };
 
   private func _findCheckout(checkouts : Buffer.Buffer<CheckoutProfile>, checkoutOwner: Principal) : ?Nat{
       var index : ?Nat = null;
@@ -44,34 +46,20 @@ shared( init_owner ) actor class PaymentWatcher() {
   };
 
   public query func owner() : async Principal {
-    	return OWNER;
-      //return init_owner.caller;
+    	return OWNER;      
   };
 
   public query ({ caller }) func whoami() : async Principal {
     	return caller;
   };
-
-  public func test_watcher() : async Text {   
-    
-    let account = "xxx";
-    //let w = Watcher.Watcher(CONFIG_TEST_MODE);
-    //return await w.get_icp_usd_exchange();
-    let p : [CheckoutProfile] = [];
-    let watcher = Watcher.Watcher(CONFIG_TEST_MODE, p);
-    return await watcher.get_icp_transactions_for_account2(account);
-
-  };
-
-  /// allow anon or authenticated checkouts created
-  /// anon checkouts are not stable and limited to 1 per session
-  /// todo: anon state is shared 
+ 
+  //upsert a checkout
   public shared ({ caller }) func addCheckout(checkoutProfile : CheckoutProfile) : async Result.Result<Text, Text> {      
 
     if(CONFIG_TEST_MODE){
       Debug.print("CALLER " # debug_show(caller));
       Debug.print("Profile Owner " # debug_show(checkoutProfile.owner));    
-    };    
+    };
 
     var isAnon = Principal.isAnonymous(caller);
     Debug.print("isAnon " # debug_show(isAnon));
@@ -79,18 +67,13 @@ shared( init_owner ) actor class PaymentWatcher() {
     let clone : CheckoutProfile = { 
         owner = caller;
         updated_at = Time.now();
-        wallets = checkoutProfile.wallets;      
+        wallet = checkoutProfile.wallet;      
         notification_channels = checkoutProfile.notification_channels;
     };
 
-    if(isAnon){
-      //anonCheckoutStorage.add(clone);
-      //return #ok("added anon profile");
-      return #err("no anon carts - login");
-    }else{      
-      if(caller != checkoutProfile.owner){
-        return #err("invalid principal - please login");
-      };
+    if(isAnon){            
+      return #err("no anon cart storage - please login");
+    }else{
       let checkoutIndex = _findCheckout(checkoutStorage, caller);
       switch(checkoutIndex){
           case null{              
@@ -107,6 +90,7 @@ shared( init_owner ) actor class PaymentWatcher() {
     
   };
 
+  // delete my checkout
   public shared ({ caller }) func deleteCheckout() : async Bool {
     var isAnon = Principal.isAnonymous(caller);
     if(CONFIG_TEST_MODE){
@@ -123,30 +107,42 @@ shared( init_owner ) actor class PaymentWatcher() {
       };
       case(?idx){
         let x = checkoutStorage.remove(idx);
-        return true;
+        return true;       
       };
     };
   };
 
-  public shared query ({ caller }) func getCheckouts() : async [CheckoutProfile] {
-      let b = Buffer.Buffer<CheckoutProfile>(10);
-      //b.append(anonCheckoutStorage);
-      b.append(checkoutStorage); //filter for caller?
-      return Iter.toArray(b.vals());
+  // get my checkouts
+  public shared query ({ caller }) func getCheckouts() : async [CheckoutProfile] {    
+    let b = Buffer.Buffer<CheckoutProfile>(10);    
+    b.append(checkoutStorage);
+    b.filterEntries(func(x : Nat, yo : CheckoutProfile){
+      return yo.owner == caller;
+    });    
+    Iter.toArray(b.vals());
   };
 
-  //todo: add permissions
+  // get my checkouts - admin
+  public shared query ({ caller }) func getCheckoutsOwner() : async [CheckoutProfile] {
+    //assert(caller == OWNER or Buffer.contains(keeperStorage));
+    if(Buffer.contains(keeperStorage, caller, Principal.equal) == false){
+      return [];
+    };    
+    return Iter.toArray(checkoutStorage.vals());
+  };
+
+  
   public shared ({ caller }) func clearCheckouts() : async Bool {    
+    //assert(caller == OWNER);    
+    if(Buffer.contains(keeperStorage, caller, Principal.equal) == false){
+      return false;
+    };
     anonCheckoutStorage := Buffer.Buffer<CheckoutProfile>(0);
     checkoutStorage := Buffer.Buffer<CheckoutProfile>(0);
     return true;
   };
 
-  // public func getCheckoutCount() : async Nat {
-  //   var x = await getCheckouts();
-  //   return x.size();
-  // };
-
+  
   public query func getCheckoutCount() : async Nat {
       let b = Buffer.Buffer<CheckoutProfile>(10);
       b.append(anonCheckoutStorage);
@@ -157,6 +153,19 @@ shared( init_owner ) actor class PaymentWatcher() {
   public query func greet(name : Text) : async Text {
     return "Hello, max this is your input: " # name # "!";
   };
+
+  public func test_watcher() : async Text {   
+    return "Error - not implemented";
+
+    let account = "xxx";
+    //let w = Watcher.Watcher(CONFIG_TEST_MODE);
+    //return await w.get_icp_usd_exchange();
+    let p : [CheckoutProfile] = [];
+    let watcher = Watcher.Watcher(CONFIG_TEST_MODE, p);
+    return await watcher.get_icp_transactions_for_account2(account);
+
+  };
+  
 
   
 };
