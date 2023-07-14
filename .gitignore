@@ -15,4 +15,8 @@ node_modules/
 dist/
 .env
 
+# config port mismatches
+vite.config.react.js
+./src/auth_client_demo_assets/react/use-auth-client.jsx
+
 src/declarations

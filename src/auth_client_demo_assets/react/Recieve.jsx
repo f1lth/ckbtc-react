@@ -19,6 +19,18 @@ function Recieve({ address, data, showTransactions, displayTransactions, goBack 
     console.log('just data -- inside recieve', data)
     console.log('just data?.data -- inside recieve', data?.data)
 
+  // constantly poll every 30s for change in data
+  //React.useEffect(load)
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      console.log('refetch ckBTC and ICP');
+      get_transaction_updates(address) 
+      get_transaction_updates_icp(address) 
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="container">
       <div className="smallContainer">
