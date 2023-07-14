@@ -1,6 +1,5 @@
 import React from "react";
 import { useAuth } from "./use-auth-client";
-import { fetchTransactions } from "./utils";
 import Recieve from './Recieve';
 import icLogo from "./assets/ic.png";
 import QRCode from "react-qr-code";
@@ -39,9 +38,7 @@ function LoggedOut() {
     if (address !== "") {
       if (WALLET_PATTERN.test(address)) {
         setIsValid(true); // Set input validity to true if the address is valid
-        const fetchedData = await fetchTransactions(address, TRANSACTION_LIMIT);
-        setData(fetchedData);
-        console.log(fetchedData)
+        
         setPolling(true);
       } else {
         setIsValid(false); // Set input validity to false if the address is invalid
@@ -53,8 +50,7 @@ function LoggedOut() {
     <>
     {polling ? 
       <Recieve 
-        address={address} 
-        data={data} 
+        address={address}         
         showTransactions={showTransactions} 
         displayTransactions={displayTransactions} 
         goBack={goBack} 
