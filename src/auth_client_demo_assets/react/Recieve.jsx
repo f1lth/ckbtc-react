@@ -18,13 +18,22 @@ const logoStyles = {
 };
 
 
-const get_transaction_updates_ckbtc = () => {
-  
+//https://rosetta-api.internetcomputer.org/search/transactions
+// {"network_identifier": {"blockchain": "Internet Computer", "network": "00000000000000020101"}, 
+// "account_identifier": {"address": "{accountId}"}}
+const get_transaction_updates_ckbtc = (addr) => {
+  console.log("get_transaction_updates_ckbtc called with address " + addr)
 
 };
 
-const get_transaction_updates_icp = () => {
+///https://icrc-api.internetcomputer.org/api/v1/ledgers/mxzaz-hqaaa-aaaar-qaada-cai/accounts/{principal}/transactions?limit=10
+const get_transaction_updates_icp = async (addr) => {
+  console.log("get_transaction_updates_icp called with address " + addr)
+  let url = "https://icrc-api.internetcomputer.org/api/v1/ledgers/mxzaz-hqaaa-aaaar-qaada-cai/accounts/" + addr + "/transactions?limit=10";
 
+  const response = await fetch(url);
+  const ck_btc_transactions = await response.json();
+  console.log(ck_btc_transactions); 
 
 };
 
@@ -52,7 +61,7 @@ function Recieve({ address, showTransactions, displayTransactions, goBack }) {
   React.useEffect(() => {
     const timer = setInterval(() => {
       console.log('refetch ckBTC and ICP');
-      get_transaction_updates(address) 
+      get_transaction_updates_ckbtc(address) 
       get_transaction_updates_icp(address) 
     }, 5000);
     return () => clearInterval(timer);
