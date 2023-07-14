@@ -2,6 +2,8 @@ import React from 'react';
 import icLogo from "./assets/ic.png";
 import QRCode from "react-qr-code";
 
+import { fetchTransactions } from './utils';
+
 import Transaction from './Transaction';
 
 const whoamiStyles = {
@@ -26,12 +28,26 @@ const get_transaction_updates_icp = () => {
 
 };
 
-function Recieve({ address, data, showTransactions, displayTransactions, goBack }) {
-    console.log('just data -- inside recieve', data)
-    console.log('just data?.data -- inside recieve', data?.data)
+const TRANSACTION_LIMIT = 10
+
+function Recieve({ address, showTransactions, displayTransactions, goBack }) {
+
+  const [data, setData] = React.useState(null);
 
   // constantly poll every 30s for change in data
   //React.useEffect(load)
+
+  React.useEffect(() => {
+
+    const fetch = async () => {
+      const fetchedData = await fetchTransactions(address, TRANSACTION_LIMIT);
+      console.log('showing transactions?')
+      setData(fetchedData);
+    }
+    fetch()
+    .catch(console.error)
+  }, []);
+
 
   React.useEffect(() => {
     const timer = setInterval(() => {

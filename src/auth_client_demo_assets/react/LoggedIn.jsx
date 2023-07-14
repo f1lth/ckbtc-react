@@ -6,12 +6,6 @@ import EditStore from "./EditStore";
 
 import icLogo from "./assets/ic.png";
 
-import { fetchTransactions }from "./utils";
-
-import { Principal } from "@dfinity/principal";
-
-
-
 /**
  * 1) if no store then create store
  * 
@@ -52,12 +46,10 @@ function LoggedIn() {
       const whoami = await whoamiActor.whoami();
 
       const store = await whoamiActor.getCheckouts();
-      console.log(store)
-      const fetchedData = await fetchTransactions(whoami.toString(), TRANSACTION_LIMIT);
-      console.log('fake local login', whoami.toString())
-      console.log('fake account-id ', whoami.toHex())
+      // if theres no stores 
+      //    make a store
+      // switch (active component)
       setAddress(whoami.toString())
-      setData(fetchedData);
     }
     fetch()
     .catch(console.error)
