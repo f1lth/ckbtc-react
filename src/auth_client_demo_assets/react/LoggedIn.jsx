@@ -55,6 +55,7 @@ function LoggedIn() {
       console.log(store)
       const fetchedData = await fetchTransactions(whoami.toString(), TRANSACTION_LIMIT);
       console.log('fake local login', whoami.toString())
+      console.log('fake account-id ', whoami.toHex())
       setAddress(whoami.toString())
       setData(fetchedData);
     }
