@@ -153,14 +153,14 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
     return "Hello, max this is your input: " # name # "!";
   };
 
-  public func get_icp_transactions() : async Text {    
+  public func get_icp_transactions(accountId : Text) : async Text {    
     //return "Error - not implemented";
-    let account = "xxx";
+    //let account = "xxx";
     //let w = Watcher.Watcher(CONFIG_TEST_MODE);
     //return await w.get_icp_usd_exchange();
     //let p : ?[CheckoutProfile] = null;
     let watcher = Watcher.Watcher(CONFIG_TEST_MODE, null);
-    return await watcher.get_icp_transactions(account);
+    return await watcher.get_icp_transactions(accountId);
 
   };  
 
