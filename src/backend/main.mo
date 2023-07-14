@@ -63,6 +63,9 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
 
     var isAnon = Principal.isAnonymous(caller);
     Debug.print("isAnon " # debug_show(isAnon));
+    if(isAnon){            
+      return #err("no anon cart storage - please login");
+    };
 
     let clone : CheckoutProfile = { 
         owner = caller;
@@ -70,23 +73,19 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
         wallet = checkoutProfile.wallet;      
         notification_channels = checkoutProfile.notification_channels;
     };
-
-    if(isAnon){            
-      return #err("no anon cart storage - please login");
-    }else{
-      let checkoutIndex = _findCheckout(checkoutStorage, caller);
-      switch(checkoutIndex){
-          case null{              
-              checkoutStorage.add(clone);
-              Debug.print("did not find checkout, adding new")
-          };
-          case(?checkoutIndex){            
-              checkoutStorage.put(checkoutIndex, clone);
-              Debug.print("checkout exists, updating");
-          };
-      };
-      return #ok("updated existing profile");
+  
+    let checkoutIndex = _findCheckout(checkoutStorage, caller);
+    switch(checkoutIndex){
+        case null{              
+            checkoutStorage.add(clone);
+            Debug.print("did not find checkout, adding new")
+        };
+        case(?checkoutIndex){            
+            checkoutStorage.put(checkoutIndex, clone);
+            Debug.print("checkout exists, updating");
+        };
     };
+    return #ok("updated existing profile");    
     
   };
 
@@ -154,18 +153,16 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
     return "Hello, max this is your input: " # name # "!";
   };
 
-  public func test_watcher() : async Text {   
-    return "Error - not implemented";
-
+  public func get_icp_transactions() : async Text {    
+    //return "Error - not implemented";
     let account = "xxx";
     //let w = Watcher.Watcher(CONFIG_TEST_MODE);
     //return await w.get_icp_usd_exchange();
-    let p : [CheckoutProfile] = [];
-    let watcher = Watcher.Watcher(CONFIG_TEST_MODE, p);
-    return await watcher.get_icp_transactions_for_account2(account);
+    //let p : ?[CheckoutProfile] = null;
+    let watcher = Watcher.Watcher(CONFIG_TEST_MODE, null);
+    return await watcher.get_icp_transactions(account);
 
-  };
-  
+  };  
 
   
 };
