@@ -15,6 +15,17 @@ const logoStyles = {
   height: "20px",
 };
 
+
+const get_transaction_updates_ckbtc = () => {
+  
+
+};
+
+const get_transaction_updates_icp = () => {
+
+
+};
+
 function Recieve({ address, data, showTransactions, displayTransactions, goBack }) {
     console.log('just data -- inside recieve', data)
     console.log('just data?.data -- inside recieve', data?.data)
