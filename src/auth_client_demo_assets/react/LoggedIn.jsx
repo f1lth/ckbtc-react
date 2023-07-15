@@ -4,6 +4,8 @@ import Recieve from "./Recieve";
 import Send from "./Send";
 import EditStore from "./EditStore";
 
+import { Principal } from "@dfinity/principal";
+
 import icLogo from "./assets/ic.png";
 
 /**
@@ -36,22 +38,26 @@ function LoggedIn() {
   //const [address, setAddress] = React.useState(""); // State variable for the fetched data
   const [principalId, setPrincipalId] = React.useState("");
   const [accountId, setAccountId] = React.useState("");
-  const [result, setResult] = React.useState("");
-  const [data , setData] = React.useState(null); // State variable for the fetched data
+  const [showPopup, setShowPopup] = React.useState(false);
+  
+
   const [showTransactions, setShowTransactions] = React.useState(false); // State variable for the fetched data
 
-  const { whoamiActor, logout } = useAuth();
+  const { actor, logout } = useAuth();
+
 
 
   React.useEffect(() => {
 
     const fetch = async () => {
-      const whoami = await whoamiActor.whoami();
-      const store = await whoamiActor.getCheckouts();
+      const whoami = await actor.whoami();
+      const store = await actor.getCheckouts();
+
+      if (store.length == 0){
+        setActiveComponent('edit')
+        setShowPopup(true)
+      }
       
-      // if theres no stores 
-      //    make a store
-      // switch (active component)
       setAccountId(whoami.toString())
       setPrincipalId(whoami.toHex())
       console.log(whoami.toHex())
@@ -70,6 +76,7 @@ function LoggedIn() {
   }
   
 
+
   const renderComponent = () => {
     switch (activeComponent) {
       case 'default':
@@ -85,12 +92,10 @@ function LoggedIn() {
         <button id="logout" onClick={logout}>
           Log out
         </button></div>
-          
       case 'recieve':
         return <Recieve 
-          principalId={principalId} 
+          principalId={accountId} 
           accountId={accountId} 
-          data={data} 
           showTransactions={showTransactions} 
           displayTransactions={displayTransactions} 
           goBack={goBack} 
@@ -100,7 +105,9 @@ function LoggedIn() {
           goBack={goBack}/>
       case 'edit':
         return <EditStore
-        goBack={goBack}/>
+        goBack={goBack}
+        showPopup={showPopup}/>
+
       default:
         return null;
     }

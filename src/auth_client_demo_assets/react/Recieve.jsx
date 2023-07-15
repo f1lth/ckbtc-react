@@ -4,7 +4,9 @@ import QRCode from "react-qr-code";
 import { fetchTransactionsCKBTC, fetchTransactionsICP } from './utils';
 import Transaction from './Transaction';
 import SHA256 from 'crypto-js/sha256';
+import Popup from './Popup';
 
+const CKBTC_CANISTER_ID = "mxzaz-hqaaa-aaaar-qaada-cai";
 
 const whoamiStyles = {
   border: "1px solid #1a1a1a",
@@ -44,6 +46,18 @@ const has_data_changed = (old_data, new_data) => {
   }
 }
 
+const getTransactionData = (tx, principalId) => {
+
+  const tx_type = principalId === tx.to_account ? 'recieved' : 'sent';
+  const tx_amt = tx.amount / 100000000;
+  const tx_symbol = tx.ledger_canister_id === CKBTC_CANISTER_ID ? 'ckBTC' : 'ICP';
+  
+  return {
+    type: tx_type,
+    val: tx_amt,
+    symbol: tx_symbol
+  }
+}
 
 const TRANSACTION_LIMIT = 10
 
@@ -51,8 +65,9 @@ function Recieve({ principalId, accountId, showTransactions, displayTransactions
 
   const [dataICP, setDataICP] = React.useState(null);
   const [dataCKBTC, setDataCKBTC] = React.useState(null);
+  const [showPopup, setShowPopup] = React.useState(false);
+  const [popupMessage, setPopupMessage] = React.useState(null);
 
-  
   React.useEffect(() => {
     const fetch = async () => {
       try {
@@ -76,15 +91,27 @@ function Recieve({ principalId, accountId, showTransactions, displayTransactions
       var has_changed = has_data_changed(dataCKBTC, newCKBTCData)
       console.log("has changed: " + has_changed)
       if(has_changed){
+        setDataCKBTC(newCKBTCData);
+        const tx_data = getTransactionData(newCKBTCData.data[0]);
+        setPopupMessage(tx_data);
+        setShowPopup(true);
         notify_client();
+        // close the popup after a couple seconds
+        setTimeout(() => {
+          setShowPopup(false)
+        }, 6000);
       };
-
-    }, 5000);  
+    }, 20000);  
     return () => clearInterval(timer);
   }, [dataCKBTC, dataICP]);
 
   return (
     <div className="container">
+      {showPopup && 
+      <Popup 
+        header_text="New Transaction!"
+        body_text={`You ${popupMessage.type} a new transaction of ${popupMessage.val} ${popupMessage.symbol}`}
+      />}
       <div className="smallContainer">
         <h3>Send ckBTC</h3>
         <QRCode value={principalId} />
@@ -93,10 +120,21 @@ function Recieve({ principalId, accountId, showTransactions, displayTransactions
           <h3>ckBTC: {principalId.slice(0, 4) + "..."}</h3>
         </div>
         {dataCKBTC && showTransactions &&
-        <div className='container' style={whoamiStyles}>
-          {(dataCKBTC?.data || []).map((transaction, index) => (
-            <Transaction key={index} transaction={transaction} />
-          ), [])}
+        <div className='borderless_container' >
+          <h1>Recent Transactions: </h1>
+          <>
+            {dataCKBTC.data.length == 0 ? 
+              <h3>No transactions yet</h3> 
+            : 
+              (dataCKBTC?.data || []).map((transaction, index) => (
+                <Transaction 
+                  key={index} 
+                  transaction={transaction} 
+                  principalId={principalId}
+                />
+              ), [])
+            }
+          </>
         </div>}
       </div>
       <button type="button" id="addressButton" onClick={displayTransactions}>

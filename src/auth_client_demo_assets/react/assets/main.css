@@ -84,7 +84,7 @@ h4,
 h5,
 h6,
 p {
-  margin: 1rem 0 1rem;
+  margin: 0.5rem;
 }
 
 button {
@@ -186,6 +186,17 @@ main::after {
   flex-direction: column;
 }
 
+.borderless_container {
+  padding: 0.5rem 1rem 1rem 0.5rem;
+  max-width: 465px;
+  min-width: 400px;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .transaction {
   max-width: 405px;
   min-width: 400px;
@@ -199,6 +210,18 @@ main::after {
   border-radius: 10px;
 }
 
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
+  padding: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+}
+
 
 .smallContainer {
   align-items: center;
@@ -206,6 +229,16 @@ main::after {
   max-width: 435px;
   min-width: 375px;
   flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.stackContainer {
+
+  padding: 0.5rem ;
+  flex: auto;
+  align-items: center;
+  justify-content: center;
   display: flex;
   flex-direction: column;
 }
@@ -221,6 +254,20 @@ main::after {
   background-color: #f2f2f2;
   border-radius: 10px;
   margin: 1.5rem;
+}
+
+.txContainer {
+  align-items: center;
+  min-height: 40px;
+  max-height:100px;
+  min-width: 430px;
+  flex: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #f2f2f2;
+  border-radius: 10px;
+  margin: 0.5 1rem 0rem 1rem;
 }
 
 @media (min-width: 512px) {

@@ -13,7 +13,7 @@
     "build": "vite build src/auth_client_demo_assets/vanilla --config vite.config.js",
     "prebuild": "npm run generate",
     "start": "vite src/auth_client_demo_assets/vanilla --config vite.config.js",
-    "start:dfx": "dfx start --background --clean --host \"127.0.0.1:4943\"",
+    "start:dfx": "dfx start --background --clean --host \"127.0.0.1:8080\"",
     "start:react": "vite src/auth_client_demo_assets/react --config vite.config.react.js",
     "build:react": "vite build src/auth_client_demo_assets/react --config vite.config.react.js",
     "prestart": "npm run generate",
