@@ -33,23 +33,26 @@ const logoStyles = {
 
 function LoggedIn() {
   const [activeComponent, setActiveComponent] = React.useState('default');
-  const [address, setAddress] = React.useState(""); // State variable for the fetched data
+  //const [address, setAddress] = React.useState(""); // State variable for the fetched data
+  const [principalId, setPrincipalId] = React.useState("");
+  const [accountId, setAccountId] = React.useState("");
   const [result, setResult] = React.useState("");
   const [data , setData] = React.useState(null); // State variable for the fetched data
   const [showTransactions, setShowTransactions] = React.useState(false); // State variable for the fetched data
 
   const { whoamiActor, logout } = useAuth();
 
+
   React.useEffect(() => {
 
     const fetch = async () => {
       const whoami = await whoamiActor.whoami();
-
       const store = await whoamiActor.getCheckouts();
       // if theres no stores 
       //    make a store
       // switch (active component)
-      setAddress(whoami.toString())
+      setAccountId(whoami.toString())
+      setPrincipalId(whoami.toHex())
     }
     fetch()
     .catch(console.error)
@@ -71,7 +74,7 @@ function LoggedIn() {
         return <div className='container'> <h1>Storefront Manager</h1>
         <div className='rowContainer'>
           <img src={icLogo} alt="Internet Computer Logo" style={logoStyles} />
-          <h3>ckBTC: {address.slice(0, 4) + "..."}</h3>
+          <h3>ckBTC: {principalId.slice(0, 4) + "..."}</h3>
         </div>
         <p>Monitor incoming payments and setup your store</p>
         <button id="recieve" onClick={() => setActiveComponent('recieve')} > Recieve ckBTC </button>
@@ -83,7 +86,8 @@ function LoggedIn() {
           
       case 'recieve':
         return <Recieve 
-          address={address} 
+          principalId={principalId} 
+          accountId={accountId} 
           data={data} 
           showTransactions={showTransactions} 
           displayTransactions={displayTransactions} 
