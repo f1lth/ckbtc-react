@@ -42,23 +42,16 @@ function LoggedOut() {
   }
 
   async function  handleAddress () {
-
     if (principalId !== "") {
       if (WALLET_PATTERN.test(principalId)) {
-
-        setIsValid(true); // Set input validity to true if the address is valid
-        // const fetchedData = await fetchTransactionsCKBTC(principalId, TRANSACTION_LIMIT);
-        // setData(fetchedData);
-        // console.log(fetchedData)
-        //const whoami = await login.whoami();
+        setIsValid(true); // Set input validity to true if the address is valid       
         var p = Principal.fromText(principalId);
         //console.log(p)
         var g = principalToAccountId(p, null);
         //console.log(g);        
         let account_id = toHexString(g);
         console.log("account id is: " + account_id);
-        setAccountId(account_id);      
-
+        setAccountId(account_id);
         setPolling(true);
       } else {
         setIsValid(false); // Set input validity to false if the address is invalid

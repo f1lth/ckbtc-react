@@ -18,11 +18,28 @@ const logoStyles = {
 };
 
 
-const notify_client = () => {
+const notify_client = (service) => {
   console.log("notify_client")
+  alert("New Transaction detected ! from " + service)
+  return false;
 }
 
-const has_data_changed = (old_data, new_data) => {
+const compare_icp_data = (old_data, new_data) => {
+  if(!old_data || !new_data){
+    return false;
+  }
+  var old_count = old_data.total_count;
+  var new_count = new_data.total_count;
+  console.log("old icp count: " + old_count);
+  console.log("new icp count: " + new_count);
+  return old_count != new_count;
+
+}
+
+const compare_ckbtc_data = (old_data, new_data) => {
+  if(!old_data || !new_data){
+    return false;
+  }
   const old_records = old_data.data.map(obj =>{
     let h = obj.to_account + obj.from_account + obj.amount + obj.index;
     const hashedData = SHA256(h).toString();    
@@ -59,6 +76,7 @@ function Recieve({ principalId, accountId, showTransactions, displayTransactions
         const ckbtcData = await fetchTransactionsCKBTC(principalId, TRANSACTION_LIMIT);
         const icpData = await fetchTransactionsICP(accountId, TRANSACTION_LIMIT);
         setDataCKBTC(ckbtcData);
+        console.log(ckbtcData);
         setDataICP(icpData);
         console.log(icpData)
       } catch (error) {
@@ -72,11 +90,21 @@ function Recieve({ principalId, accountId, showTransactions, displayTransactions
     const timer = setInterval(async () => {
       console.log('refetch ckBTC and ICP');   
       const newCKBTCData = await fetchTransactionsCKBTC(principalId, TRANSACTION_LIMIT);
+      setDataCKBTC(newCKBTCData);
       const newICPData = await fetchTransactionsICP(accountId, TRANSACTION_LIMIT);
-      var has_changed = has_data_changed(dataCKBTC, newCKBTCData)
-      console.log("has changed: " + has_changed)
-      if(has_changed){
-        notify_client();
+      setDataICP(newICPData);
+
+      var has_ckbtc_changed = compare_ckbtc_data(dataCKBTC, newCKBTCData)
+      console.log("has_ckbtc_changed: " + has_ckbtc_changed)
+
+      var has_icp_changed = compare_icp_data(dataICP, newICPData);
+      console.log("has_icp_changed: " + has_ckbtc_changed)
+
+      if(has_ckbtc_changed){
+        notify_client("ckBTC");
+      };
+      if(has_icp_changed){
+        notify_client("ICP");
       };
 
     }, 5000);  

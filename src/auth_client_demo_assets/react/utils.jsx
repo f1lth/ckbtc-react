@@ -4,6 +4,7 @@ import { sha224 } from "js-sha256";
 import crc32 from "crc-32";
 
 export async function fetchTransactionsCKBTC(principalId, limit) {
+  return "";
     const response = await fetch(`https://icrc-api.internetcomputer.org/api/v1/ledgers/mxzaz-hqaaa-aaaar-qaada-cai/accounts/${principalId}/transactions?limit=${limit}`);
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -14,7 +15,7 @@ export async function fetchTransactionsCKBTC(principalId, limit) {
 
 export async function fetchTransactionsICP(accountId, limit) {
 
-  return "";
+  //return "";
   
   let url = "https://rosetta-api.internetcomputer.org/search/transactions";
 
