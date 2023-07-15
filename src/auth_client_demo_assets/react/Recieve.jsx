@@ -7,6 +7,7 @@ import { fetchTransactionsCKBTC, fetchTransactionsICP } from './utils';
 import Transaction from './Transaction';
 
 import SHA256 from 'crypto-js/sha256';
+import { createEmptyStatement } from 'typescript';
 
 const whoamiStyles = {
   border: "1px solid #1a1a1a",
@@ -45,21 +46,30 @@ const get_transaction_updates_ckbtc = async (addr) => {
 
 };
 
+const notify_client = () => {
+  console.log("notify_client")
+}
 
+const has_data_changed = (old_data, new_data) => {
+  const old_records = old_data.data.map(obj =>{
+    let h = obj.to_account + obj.from_account + obj.amount + obj.index;
+    const hashedData = SHA256(h).toString();    
+    return hashedData;
+  });
 
+  const new_records = new_data.data.map(obj =>{
+    let h = obj.to_account + obj.from_account + obj.amount + obj.index;
+    const hashedData = SHA256(h).toString();    
+    return hashedData;
+  });
+  console.log(old_records)
+  console.log(new_records)
 
-const compare_ckbtc = async (address, old_data) => {
-  const latest = await fetchTransactionsCKBTC(address, TRANSACTION_LIMIT);
-
-  console.log(latest)
-  console.log(old_data);
-
-  if(JSON.stringify(latest) != JSON.stringify(old_data)){    
-    console.log("changes detected in ckbtc!")
+  if(JSON.stringify(old_records) != JSON.stringify(new_records)){
+    return true;
   }else{
-    console.log("no changes detected")
+    return false;
   }
-  return;
 }
 
 
@@ -71,32 +81,34 @@ function Recieve({ address, showTransactions, displayTransactions, goBack }) {
   const [dataCKBTC, setDataCKBTC] = React.useState(null);
   
   React.useEffect(() => {
-
     const fetch = async () => {
-      const ckbtcData = fetchTransactionsCKBTC(address, TRANSACTION_LIMIT);
-      const icpData = fetchTransactionsICP(address, TRANSACTION_LIMIT);  
-      setDataCKBTC(ckbtcData);
-      setDataICP(icpData);      
-    }
-    fetch()
-    .catch(console.error)
+      try {
+        const ckbtcData = await fetchTransactionsCKBTC(address, TRANSACTION_LIMIT);
+        const icpData = await fetchTransactionsICP(address, TRANSACTION_LIMIT);
+        setDataCKBTC(ckbtcData);
+        setDataICP(icpData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetch();
   }, []);
-
-
+  
   React.useEffect(() => {
-    const timer = setInterval(() => {
+    const timer = setInterval(async () => {
+      console.log('refetch ckBTC and ICP');
+      const newCKBTCData = await fetchTransactionsCKBTC(address, TRANSACTION_LIMIT);
+      const newICPData = await fetchTransactionsICP(address, TRANSACTION_LIMIT);
+
+      var has_changed = has_data_changed(dataCKBTC, newCKBTCData)
+      console.log("has changed: " + has_changed)
+      if(has_changed){
+        notify_client();
+      };
       
-      console.log('refetch ckBTC and ICP');      
-      console.log(dataCKBTC);
-
-      compare_ckbtc(address, dataCKBTC);
-
-      //get_transaction_updates_ckbtc(address) 
-      //get_transaction_updates_icp(address) 
-
-    }, 5000);
+    }, 5000);  
     return () => clearInterval(timer);
-  }, []);
+  }, [dataCKBTC, dataICP]);
 
   return (
     <div className="container">
