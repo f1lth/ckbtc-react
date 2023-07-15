@@ -1,10 +1,11 @@
 import React from "react";
 import { useAuth } from "./use-auth-client";
-import { fetchTransactionsCKBTC } from "./utils";
+
 import Recieve from './Recieve';
 import icLogo from "./assets/ic.png";
 import QRCode from "react-qr-code";
 import { Principal } from "@dfinity/principal";
+import { principalToAccountId, toHexString } from "./utils";
 
 
 const WALLET_PATTERN = /^(([a-zA-Z0-9]{5}-){4}|([a-zA-Z0-9]{5}-){10})[a-zA-Z0-9]{3}(-[a-zA-Z0-9]{7}\.[a-fA-F0-9]{1,64})?$/;
@@ -31,7 +32,6 @@ function LoggedOut() {
   const [data, setData] = React.useState(null); // State variable for the fetched data
   const [showTransactions, setShowTransactions] = React.useState(false); // State variable for the fetched data
 
-  
 
   function goBack () {
     setPolling(false);
@@ -50,6 +50,15 @@ function LoggedOut() {
         // const fetchedData = await fetchTransactionsCKBTC(principalId, TRANSACTION_LIMIT);
         // setData(fetchedData);
         // console.log(fetchedData)
+        //const whoami = await login.whoami();
+        var p = Principal.fromText(principalId);
+        //console.log(p)
+        var g = principalToAccountId(p, null);
+        //console.log(g);        
+        let account_id = toHexString(g);
+        console.log("account id is: " + account_id);
+        setAccountId(account_id);      
+
         setPolling(true);
       } else {
         setIsValid(false); // Set input validity to false if the address is invalid

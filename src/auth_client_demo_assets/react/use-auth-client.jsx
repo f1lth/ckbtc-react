@@ -92,6 +92,8 @@ export const useAuthClient = (options = defaultOptions) => {
   };
 };
 
+
+
 /**
  * @type {React.FC}
  */
