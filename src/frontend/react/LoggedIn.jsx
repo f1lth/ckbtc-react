@@ -26,9 +26,10 @@ function LoggedIn() {
       const whoami = await actor.whoami();
       const store = await actor.getCheckouts();
       // if there's no store lets make one
+      console.log(store);
       if (store.length == 0){
-        setActiveComponent('edit')
         setShowPopup(true)
+        setActiveComponent('edit')
       }
       setAccountId(whoami.toString())
       setPrincipalId(whoami.toHex())
@@ -82,7 +83,7 @@ function LoggedIn() {
       case 'edit':
         return <EditStore
         goBack={goBack}
-        showPopup={showPopup}/>
+        initPopup={showPopup}/>
       default:
         return null;
     }

@@ -15,6 +15,7 @@ function Transaction({ transaction, principalId}) {
   const [coinLogo, setCoinLogo] = React.useState(icLogo);
   const [recieved, setReceived] = React.useState(false);
   
+  console.log(transaction)
   // set tx type when component mounts
   React.useEffect(() => {
     if (transaction.ledger_canister_id == CKBTC_CANISTER_ID) {

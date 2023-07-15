@@ -5,12 +5,12 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export default defineConfig({
-  root: path.resolve(__dirname, "src", "auth_client_demo_assets", "vanilla"),
+  root: path.resolve(__dirname, "src", "frontend", "vanilla"),
   build: {
     outDir: path.resolve(
       __dirname,
       "src",
-      "auth_client_demo_assets",
+      "frontend",
       "vanilla",
       "dist"
     ),

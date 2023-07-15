@@ -81,7 +81,6 @@ function Recieve({ principalId, accountId, showTransactions, displayTransactions
         const icpData = await fetchTransactionsICP(accountId, TRANSACTION_LIMIT);
         setDataCKBTC(ckbtcData);
         setDataICP(icpData);
-        console.log(icpData)
       } catch (error) {
         console.error(error);
       }

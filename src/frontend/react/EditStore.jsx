@@ -19,7 +19,7 @@ function EditStore({ goBack, initPopup }) {
 
   const { actor } = useAuth();
 
-  // on mount if there's a store
+  // on mount check if there's a store
   React.useEffect(() => {
     const fetch = async () => {
       const store = await actor.getCheckouts();
