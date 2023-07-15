@@ -2,17 +2,11 @@ import React from 'react';
 
 const WALLET_PATTERN = /^(([a-zA-Z0-9]{5}-){4}|([a-zA-Z0-9]{5}-){10})[a-zA-Z0-9]{3}(-[a-zA-Z0-9]{7}\.[a-fA-F0-9]{1,64})?$/;
 
-const whoamiStyles = {
-  border: "1px solid #1a1a1a",
-  marginBottom: "1rem",
-};
-
-const logoStyles = {
-  flex: "0 0 auto",
-  width: "34px",
-  height: "20px",
-};
-
+/**
+ *
+ * @param goBack - function to return to main screen 
+ * 
+ */
 function Send({ goBack }) {
   const [to, setTo] = React.useState("");
   const [amount, setAmount] = React.useState("");
@@ -23,15 +17,16 @@ function Send({ goBack }) {
       if (WALLET_PATTERN.test(to)) {
         setTo(address)
         setIsValid(true); // Set input validity to true if the address is valid
-        // do ICP transfer
-        // if success: do modal with success
+
+        // DO A TRANSFER HERE
+        // IF SUCCESS MODAL SUCCESS
+
       } else {
         setIsValid(false); // Set input validity to false if the address is invalid
       }
     }
   }
   
-
   return (
     <div className="container">
       <h2>Transfer ckBTC</h2>

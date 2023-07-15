@@ -4,27 +4,29 @@ import icLogo from "./assets/ic.png";
 
 const CKBTC_CANISTER_ID = "mxzaz-hqaaa-aaaar-qaada-cai";
 
+/**
+ *
+ * @param transaction - transaction object f
+ * @param principalID - principal address of user
+ * 
+ */
 function Transaction({ transaction, principalId}) {
 
   const [coinLogo, setCoinLogo] = React.useState(icLogo);
   const [recieved, setReceived] = React.useState(false);
   
-  console.log(transaction)
-
+  // set tx type when component mounts
   React.useEffect(() => {
     if (transaction.ledger_canister_id == CKBTC_CANISTER_ID) {
       setCoinLogo(ckBTC_Logo);
     }  
-    if (transaction.to_account === principalId) { //if tx was to me
-
+    //if tx was to me then it was a 'RECIEVE'
+    if (transaction.to_account === principalId) { 
       setReceived(true);
-
     } 
   }, []);
 
-
   return (
-
       <div className='borderless_container'>
       <div className='txContainer'>
         <div className='stackContainer'>

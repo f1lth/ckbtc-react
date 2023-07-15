@@ -1,50 +1,45 @@
 import React from 'react';
-
 import Popup from './Popup';
-
 import { useAuth } from './use-auth-client';
 
 const WALLET_PATTERN = /^(([a-zA-Z0-9]{5}-){4}|([a-zA-Z0-9]{5}-){10})[a-zA-Z0-9]{3}(-[a-zA-Z0-9]{7}\.[a-fA-F0-9]{1,64})?$/;
 
-const whoamiStyles = {
-  border: "1px solid #1a1a1a",
-  marginBottom: "1rem",
-};
-
-const logoStyles = {
-  flex: "0 0 auto",
-  width: "34px",
-  height: "20px",
-};
-
+/**
+ *
+ * @param goBack - function to return to main screen
+ * @param initPopup - show a popup when the component mounts for first time 
+ * 
+ */
 function EditStore({ goBack, initPopup }) {
-  const [name, setName] = React.useState("");
   const [alertEmail, setAlertEmail] = React.useState("");
   const [wallet, setWallet] = React.useState("");
   const [isValid, setIsValid] = React.useState(true); // State variable for input validity
-
   const [showPopup, setShowPopup] = React.useState(false);
 
-  const { actor, logout } = useAuth();
+  const { actor } = useAuth();
 
-
+  // on mount if there's a store
   React.useEffect(() => {
     const fetch = async () => {
       const store = await actor.getCheckouts();
-
       if (store.length == 0) {  
-        setShowPopup(true)
+        initPopup = true;
       }
     };
     fetch().catch((err) => console.log(err));
   }, []);
 
-
-
+  // push a store update to backend 
   const updateStore = async  () => {
+
+    // enter a valid wallet
+    if (!WALLET_PATTERN.test(wallet)) {
+      setIsValid(false);
+      return;
+    } setIsValid(true);
+
     // call to backend
     const whoami = await actor.whoami();
-
     const chanl = {
       api_key : alertEmail,
       url : 'NA',
@@ -58,16 +53,17 @@ function EditStore({ goBack, initPopup }) {
       notification_channels: [chanl]
     }
    
-    console.log('attempting to update store with', newStore)
+    // push the update
+    console.log('attempting to set a new store');
     const response = await actor.addCheckout(newStore);
-    
-    console.log(response)
-    
 
-    // check if response was ok: "updated existing profile" and if so display happy modal
+    // check if store set, if so display update modal
     if (response.ok == 'updated existing profile'){
       setShowPopup(true)
-      //goBack()
+      // close the popup after a few seconds
+      setTimeout(() => {
+        setShowPopup(false)
+      }, 6000);
     }
   }
     
@@ -86,15 +82,14 @@ function EditStore({ goBack, initPopup }) {
             placeholder="Wallet principal"
             value={wallet}
             onChange={(e) => setWallet(e.target.value)}
-            style={{ borderColor: isValid ? "" : "red" }} // Add red border if input is invalid
+            style={{ borderColor: isValid ? "" : "red" }}
           />
-          {!isValid && <p style={{ color: "red" }}>Invalid address</p>} {/* Display error message if input is invalid */}
+          {!isValid && <p style={{ color: "red" }}>Invalid address</p>}
           <input
             placeholder="Update alert email"
             value={alertEmail}
             onChange={(e) => setAlertEmail(e.target.value)}
           />
-
           <button type="button" id="addressButton" onClick={updateStore}>
             Save
           </button>

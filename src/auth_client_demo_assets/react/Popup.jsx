@@ -1,9 +1,12 @@
 import React from "react";
-import { useAuth } from "./use-auth-client";
 
+/**
+ *
+ * @param header_text - main popup text
+ * @param body_text - body popup text
+ * 
+ */
 function Popup({header_text, body_text}) {
-
-  const { login } = useAuth();
 
   return (
     <div className="popup">

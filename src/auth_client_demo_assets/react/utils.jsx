@@ -1,5 +1,9 @@
-// https://icrc-api.internetcomputer.org/api/v1/ledgers/mxzaz-hqaaa-aaaar-qaada-cai/accounts/fflv5-nf2ry-u3v76-lprfi-rmnpz-y7wbj-3u7w4-u7rjj-smyiu-a4ygx-xqe/transactions?limit=1
-
+/**
+ *
+ * @param principalID - PrincipalID of account to fetch tx for
+ * @param limit - limit number of transactions
+ * @returns json list of transaction data from ckbtc mainnet ledger
+ */
 export async function fetchTransactionsCKBTC(principalId, limit) {
     const response = await fetch(`https://icrc-api.internetcomputer.org/api/v1/ledgers/mxzaz-hqaaa-aaaar-qaada-cai/accounts/${principalId}/transactions?limit=${limit}`);
     if (!response.ok) {
@@ -8,7 +12,12 @@ export async function fetchTransactionsCKBTC(principalId, limit) {
     return await response.json();
 }
   
-
+/**
+ *
+ * @param principalID - PrincipalID of account to fetch tx for via rosetta
+ * @param limit - limit number of transactions
+ * @returns json list of transaction data from ICP mainnet ledger
+ */
 export async function fetchTransactionsICP(accountId, limit) {
 
   return "";
