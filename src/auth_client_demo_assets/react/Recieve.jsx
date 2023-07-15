@@ -51,9 +51,8 @@ const compare_ckbtc_data = (old_data, new_data) => {
     const hashedData = SHA256(h).toString();    
     return hashedData;
   });
-  console.log(old_records)
-  console.log(new_records)
-
+  // console.log(old_records)
+  // console.log(new_records)
   if(JSON.stringify(old_records) != JSON.stringify(new_records)){
     return true;
   }else{
@@ -61,14 +60,12 @@ const compare_ckbtc_data = (old_data, new_data) => {
   }
 }
 
-
 const TRANSACTION_LIMIT = 10
 
 function Recieve({ principalId, accountId, showTransactions, displayTransactions, goBack }) {
 
   const [dataICP, setDataICP] = React.useState(null);
   const [dataCKBTC, setDataCKBTC] = React.useState(null);
-
   
   React.useEffect(() => {
     const fetch = async () => {

@@ -47,14 +47,12 @@ function LoggedIn() {
 
     const fetch = async () => {
       const whoami = await whoamiActor.whoami();
-      const store = await whoamiActor.getCheckouts();
-      
+      const store = await whoamiActor.getCheckouts();      
       // if theres no stores 
       //    make a store
       // switch (active component)
       setAccountId(whoami.toString())
-      setPrincipalId(whoami.toHex())
-      console.log(whoami.toHex())
+      setPrincipalId(whoami.toHex())      
     }
     fetch()
     .catch(console.error)
