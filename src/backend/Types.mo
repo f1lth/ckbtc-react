@@ -5,21 +5,14 @@ module Types {
     public type CheckoutProfile = {
         owner: Principal;    
         updated_at: Int;    
-        wallet: WalletAddress;
+        wallet: Text;
         notification_channels: [NotificationChannel];
-    };
-
-    public type WalletAddress = {
-        address: Text;
-        token_name: Text;        
-        enabled: Bool;
-    };
+    };    
 
     public type NotificationChannel = {
-        service: Text;
-        url: Text;
-        key: Text;
-        interval: Int;
+        service: Text; //twillio, email
+        url: Text; //api.twillio.com
+        api_key: Text; //user key
         enabled: Bool;
     };
 

@@ -6,6 +6,7 @@ import icLogo from "./assets/ic.png";
 import QRCode from "react-qr-code";
 import { Principal } from "@dfinity/principal";
 
+
 const WALLET_PATTERN = /^(([a-zA-Z0-9]{5}-){4}|([a-zA-Z0-9]{5}-){10})[a-zA-Z0-9]{3}(-[a-zA-Z0-9]{7}\.[a-fA-F0-9]{1,64})?$/;
 const TRANSACTION_LIMIT = 10
 
@@ -43,16 +44,7 @@ function LoggedOut() {
   async function  handleAddress () {
 
     if (principalId !== "") {
-      if (WALLET_PATTERN.test(principalId)) {      
-
-        var dude = Principal.fromText(principalId);
-        console.log(dude)
-
-        var thing = dude.toText();
-        console.log(thing)
-        
-
-        setAccountId(dude);
+      if (WALLET_PATTERN.test(principalId)) {
 
         setIsValid(true); // Set input validity to true if the address is valid
         // const fetchedData = await fetchTransactionsCKBTC(principalId, TRANSACTION_LIMIT);

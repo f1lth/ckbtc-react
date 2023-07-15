@@ -39,7 +39,7 @@
     "last 2 edge version"
   ],
   "dependencies": {
-    "@dfinity/agent": "^0.15.6",
+    "@dfinity/agent": "^0.15.7",
     "@dfinity/auth-client": "^0.15.6",
     "@dfinity/candid": "^0.15.6",
     "@dfinity/principal": "^0.15.7",
