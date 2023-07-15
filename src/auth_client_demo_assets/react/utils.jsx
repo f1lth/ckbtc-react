@@ -37,7 +37,7 @@ export async function fetchTransactionsICP(accountId, limit) {
 //   return [...subAccount];
 // }
 
-export function principalToAccountId(principal, subaccount) {
+function principalToAccountId(principal, subaccount) {
   const shaObj = sha224.create();
   shaObj.update("\x0Aaccount-id");
   shaObj.update(principal.toUint8Array());
@@ -53,8 +53,13 @@ export function principalToAccountId(principal, subaccount) {
   ];
 }
 
-export function toHexString(byteArray) {
+function toHexString(byteArray) {
   return Array.from(byteArray, function(byte) {
     return ('0' + (byte & 0xFF).toString(16)).slice(-2);
   }).join('')
+}
+
+export function PrincipalToAccountIdText(principal){
+  var p = principalToAccountId(principal);
+  return toHexString(p);
 }

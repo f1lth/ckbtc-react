@@ -5,7 +5,7 @@ import Recieve from './Recieve';
 import icLogo from "./assets/ic.png";
 import QRCode from "react-qr-code";
 import { Principal } from "@dfinity/principal";
-import { principalToAccountId, toHexString } from "./utils";
+import { PrincipalToAccountIdText } from "./utils";
 
 
 const WALLET_PATTERN = /^(([a-zA-Z0-9]{5}-){4}|([a-zA-Z0-9]{5}-){10})[a-zA-Z0-9]{3}(-[a-zA-Z0-9]{7}\.[a-fA-F0-9]{1,64})?$/;
@@ -47,9 +47,11 @@ function LoggedOut() {
         setIsValid(true); // Set input validity to true if the address is valid       
         var p = Principal.fromText(principalId);
         //console.log(p)
-        var g = principalToAccountId(p, null);
+        //var g = principalToAccountId(p, null);
         //console.log(g);        
-        let account_id = toHexString(g);
+        //let account_id = toHexString(g);
+
+        let account_id = PrincipalToAccountIdText(p);
         console.log("account id is: " + account_id);
         setAccountId(account_id);
         setPolling(true);

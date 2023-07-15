@@ -104,7 +104,7 @@ function Recieve({ principalId, accountId, showTransactions, displayTransactions
         notify_client("ICP");
       };
 
-    }, 5000);  
+    }, 8000);  
     return () => clearInterval(timer);
   }, [dataCKBTC, dataICP]);
 
