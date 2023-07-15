@@ -13,6 +13,7 @@ const WALLET_PATTERN = /^(([a-zA-Z0-9]{5}-){4}|([a-zA-Z0-9]{5}-){10})[a-zA-Z0-9]
 function EditStore({ goBack, initPopup }) {
   const [alertEmail, setAlertEmail] = React.useState("");
   const [wallet, setWallet] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
   const [isValid, setIsValid] = React.useState(true); // State variable for input validity
   const [showPopup, setShowPopup] = React.useState(false);
 
@@ -31,6 +32,8 @@ function EditStore({ goBack, initPopup }) {
 
   // push a store update to backend 
   const updateStore = async  () => {
+
+    setLoading(true);
 
     // enter a valid wallet
     if (!WALLET_PATTERN.test(wallet)) {
@@ -56,9 +59,11 @@ function EditStore({ goBack, initPopup }) {
     // push the update
     console.log('attempting to set a new store');
     const response = await actor.addCheckout(newStore);
+    
 
     // check if store set, if so display update modal
     if (response.ok == 'updated existing profile'){
+      setLoading(false);
       setShowPopup(true)
       // close the popup after a few seconds
       setTimeout(() => {
@@ -75,9 +80,9 @@ function EditStore({ goBack, initPopup }) {
       />}
       {showPopup && <Popup 
         header_text='Success!'
-        body_text='Your store profile was updated.'
+        body_text='Your store settings were updated.'
       />}
-      <h2>Edit store profile</h2>
+      <h2>{loading ? "Updating..." : "Edit store profile"}</h2>
          <input
             placeholder="Wallet principal"
             value={wallet}
