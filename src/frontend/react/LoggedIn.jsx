@@ -30,7 +30,10 @@ function LoggedIn() {
       if (store.length == 0){
         setShowPopup(true)
         setActiveComponent('edit')
+      } else {
+        setShowPopup(false);
       }
+      
       setAccountId(whoami.toString())
       setPrincipalId(whoami.toHex())
     }

@@ -97,7 +97,6 @@ function Recieve({ principalId, accountId, showTransactions, displayTransactions
       const newCKBTCData = await fetchTransactionsCKBTC(principalId, TRANSACTION_LIMIT);
       const newICPData = await fetchTransactionsICP(accountId, TRANSACTION_LIMIT);
       var has_changed_ckBTC = has_data_changed(dataCKBTC, newCKBTCData)
-      console.log("has changed: " + has_changed)
 
       if(has_changed_ckBTC){
         setDataCKBTC(newCKBTCData);
