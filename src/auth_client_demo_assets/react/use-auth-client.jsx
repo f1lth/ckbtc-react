@@ -37,7 +37,7 @@ export const useAuthClient = (options = defaultOptions) => {
   const [authClient, setAuthClient] = useState(null);
   const [identity, setIdentity] = useState(null);
   const [principal, setPrincipal] = useState(null);
-  const [whoamiActor, setWhoamiActor] = useState(null);
+  const [actor, setActor] = useState(null);
 
   useEffect(() => {
     // Initialize AuthClient
@@ -67,13 +67,13 @@ export const useAuthClient = (options = defaultOptions) => {
 
     setAuthClient(client);
 
-    const actor = createActor(canisterId, {
+    const _actor = createActor(canisterId, {
       agentOptions: {
         identity,
       },
     });
 
-    setWhoamiActor(actor);
+    setActor(_actor);
   }
 
   async function logout() {
@@ -88,7 +88,7 @@ export const useAuthClient = (options = defaultOptions) => {
     authClient,
     identity,
     principal,
-    whoamiActor,
+    actor,
   };
 };
 
