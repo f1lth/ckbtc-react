@@ -56,6 +56,13 @@ function EditStore({ goBack }) {
     console.log(thing)
   }
   
+  const test_notification = async () =>{
+    const whoami = await whoamiActor.whoami();
+    console.log(whoami);
+
+    const notification = await whoamiActor.send_notification_test();
+    console.log(notification);
+  }
     
   return (
     <div className="container">
@@ -82,6 +89,9 @@ function EditStore({ goBack }) {
           </button>
         <button type="button" id="back" onClick={goBack}>
           Go back
+        </button>
+        <button type="button" id="test_notification" onClick={test_notification}>
+          Test Notification
         </button>
     </div>
   );

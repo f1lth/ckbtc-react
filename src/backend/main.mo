@@ -123,7 +123,7 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
     Iter.toArray(b.vals());
   };
 
-  // get my checkouts - admin
+  // get all checkouts - admin
   public shared query ({ caller }) func getCheckoutsOwner() : async [CheckoutProfile] {
     //assert(caller == OWNER or Buffer.contains(keeperStorage));
     if(Buffer.contains(keeperStorage, caller, Principal.equal) == false){
@@ -168,7 +168,7 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
 
   };  
 
-  // send a notification - workaround for CORS
+  // send a notification via https outcall - workaround for CORS
   public shared ({ caller }) func send_notification() : async Text {       
     let idx = _findCheckout(checkoutStorage, caller);
     switch(idx){
@@ -176,9 +176,9 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
         return "No profile found"
       };
       case(?idx){
-        let profile = checkoutStorage.get(idx);
-        let sender = Courier.Courier(profile);
-        let result = await sender.send_notification();
+        let profile = checkoutStorage.get(idx);        
+        let courier = Courier.Courier(profile);
+        let result = await courier.send_notification();
         return result;
       };
     };
