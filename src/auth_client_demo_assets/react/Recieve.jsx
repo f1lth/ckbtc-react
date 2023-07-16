@@ -1,7 +1,7 @@
 import React from 'react';
 import icLogo from "./assets/ic.png";
 import QRCode from "react-qr-code";
-import { fetchTransactionsCKBTC, fetchTransactionsICP } from './utils';
+import { fetchTransactionsCKBTC, fetchTransactionsICP, NotificationEmail, NotificationSMS } from './utils';
 import Transaction from './Transaction';
 import SHA256 from 'crypto-js/sha256';
 

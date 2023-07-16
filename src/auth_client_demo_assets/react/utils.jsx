@@ -11,7 +11,6 @@ export async function fetchTransactionsCKBTC(principalId, limit) {
 }  
 
 export async function fetchTransactionsICP(accountId, limit) {  
-  //return "";  
   let url = "https://rosetta-api.internetcomputer.org/search/transactions";  
   let data = {"network_identifier": { "blockchain" : "Internet Computer", "network": "00000000000000020101"}, "account_identifier": { "address": accountId  } };
   const response = await fetch(url, {
@@ -20,7 +19,7 @@ export async function fetchTransactionsICP(accountId, limit) {
       "Cache-Control": "no-cache, no-store, must-revalidate",      
       "Content-Type": "application/json; charset=utf-8"
     },    
-    body: JSON.stringify(data), // body data type must match "Content-Type" header
+    body: JSON.stringify(data)
   });
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
@@ -62,4 +61,15 @@ function toHexString(byteArray) {
 export function PrincipalToAccountIdText(principal){
   var p = principalToAccountId(principal);
   return toHexString(p);
+}
+
+
+export function NotificationEmail(email){
+  console.log("sending NotificationEmail " + email)
+
+}
+
+export function NotificationSMS(sms){
+  console.log("sending NotificationSMS " + sms)  
+
 }
