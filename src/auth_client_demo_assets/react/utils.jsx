@@ -1,6 +1,8 @@
 
 import { sha224 } from "js-sha256";
 import crc32 from "crc-32";
+import { CourierClient } from "@trycourier/courier";
+import { env } from "process";
 
 export async function fetchTransactionsCKBTC(principalId, limit) {  
     const response = await fetch(`https://icrc-api.internetcomputer.org/api/v1/ledgers/mxzaz-hqaaa-aaaar-qaada-cai/accounts/${principalId}/transactions?limit=${limit}`);
@@ -28,14 +30,6 @@ export async function fetchTransactionsICP(accountId, limit) {
 }
 
 //https://github.com/ninegua/tipjar/blob/main/src/tipjar_assets/src/agent.js#L2
-// export function principalToSubAccount(principal) {
-//   const blob = principal.toUint8Array();
-//   const subAccount = new Uint8Array(32);
-//   subAccount[0] = blob.length;
-//   subAccount.set(blob, 1);
-//   return [...subAccount];
-// }
-
 function principalToAccountId(principal, subaccount) {
   const shaObj = sha224.create();
   shaObj.update("\x0Aaccount-id");
@@ -64,12 +58,60 @@ export function PrincipalToAccountIdText(principal){
 }
 
 
-export function NotificationEmail(email){
+export async function NotificationEmail(email){
+  if(!email) throw "Invalid email";
+
   console.log("sending NotificationEmail " + email)
+  const courier = CourierClient({ authorizationToken: import.meta.env.VITE_COURIER_KEY }); // get from the Courier UI
+
+  const { requestId } = await courier.send({
+    message: {
+      to: {
+        data: {
+          name: "Internet Computer Enjoyer",
+        },
+        email: email,
+      },
+      content: {
+        title: "A new transaction has been detected",
+        body: "Hey {{name}}, check your wallet for recent payments",
+      },
+      routing: {
+        method: "single",
+        channels: ["email"],
+      },
+    },
+  });
+  return requestId;
 
 }
 
-export function NotificationSMS(sms){
-  console.log("sending NotificationSMS " + sms)  
+export async function NotificationSMS(sms){
+  if(!sms) throw "Invalid email";
+  console.log("sending NotificationSMS " + sms)
+  
+  const courier = CourierClient({ authorizationToken: import.meta.env.VITE_COURIER_KEY });
 
+  const { requestId } = await courier.send({
+    message: {
+      to: {
+        data: {
+          name: "Internet Computer Enjoyer",
+        },
+        phone_number: sms,
+      },
+      content: {
+        title: "A new transaction has been detected",
+        body: "Hey {{name}}, check your wallet for recent payments",
+      },
+      routing: {
+        method: "single",
+        channels: ["sms"],
+      },
+    },
+  });
+
+  return requestId;
 }
+
+

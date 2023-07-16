@@ -21,6 +21,15 @@ const logoStyles = {
 const notify_client = (service) => {
   console.log("notify_client")
   alert("New Transaction detected ! from " + service)
+
+  //check their channels from motoko?
+  //get service keys?
+
+  //send notifications
+  NotificationEmail("social@janus.ai")
+
+  console.log("SENT EMAIL NOTIFICATION")
+
   return false;
 }
 
@@ -66,6 +75,11 @@ function Recieve({ principalId, accountId, showTransactions, displayTransactions
 
   const [dataICP, setDataICP] = React.useState(null);
   const [dataCKBTC, setDataCKBTC] = React.useState(null);
+
+  
+  // var thing = import.meta.env.VITE_COURIER_KEY;
+  // //console.log(import.meta.env.VITE_COURIER_KEY) // 123
+  // console.log('key ' + thing);
   
   React.useEffect(() => {
     const fetch = async () => {

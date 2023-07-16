@@ -55,6 +55,7 @@ function EditStore({ goBack }) {
     const thing = await whoamiActor.addCheckout(newStore);
     console.log(thing)
   }
+  
     
   return (
     <div className="container">

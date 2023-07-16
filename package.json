@@ -43,6 +43,7 @@
     "@dfinity/auth-client": "^0.18.0",
     "@dfinity/candid": "^0.18.0",
     "@dfinity/principal": "^0.18.0",
+    "@trycourier/courier": "^4.8.0",
     "base32-encode": "^2.0.0",
     "crc-32": "^1.2.2",
     "crypto-js": "^4.1.1",

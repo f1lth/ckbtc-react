@@ -5,10 +5,11 @@ import Array "mo:base/Array";
 import Time "mo:base/Time";
 import Debug "mo:base/Debug";
 import Principal "mo:base/Principal";
-
+import Option "mo:base/Option";
 
 import Types "Types";
 import Watcher "Watcher";
+import Courier "Courier";
 
 /// Simple ICP / ckBTC Checkout
 /// Registered users can keep a profile and load saved addressess and notification channels
@@ -131,7 +132,7 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
     return Iter.toArray(checkoutStorage.vals());
   };
 
-  
+  // nuke all checkouts - admin
   public shared ({ caller }) func clearCheckouts() : async Bool {    
     //assert(caller == OWNER);    
     if(Buffer.contains(keeperStorage, caller, Principal.equal) == false){
@@ -142,18 +143,19 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
     return true;
   };
 
-  
+  // get checkout count
   public query func getCheckoutCount() : async Nat {
       let b = Buffer.Buffer<CheckoutProfile>(10);
       b.append(anonCheckoutStorage);
-      b.append(checkoutStorage); //filter for caller?
+      b.append(checkoutStorage);
       Iter.toArray(b.vals()).size();
   };
+
 
   public query func greet(name : Text) : async Text {
     return "Hello, max this is your input: " # name # "!";
   };
-  
+
 
   public func get_icp_transactions(accountId : Text) : async Text {    
     //return "Error - not implemented";
@@ -165,6 +167,22 @@ shared( init_owner ) actor class PaymentWatcher(init_signers : ?[Principal]) {
     return await watcher.get_icp_transactions(accountId);
 
   };  
+
+  // send a notification - workaround for CORS
+  public shared ({ caller }) func send_notification() : async Text {       
+    let idx = _findCheckout(checkoutStorage, caller);
+    switch(idx){
+      case null{
+        return "No profile found"
+      };
+      case(?idx){
+        let profile = checkoutStorage.get(idx);
+        let sender = Courier.Courier(profile);
+        let result = await sender.send_notification();
+        return result;
+      };
+    };
+  };
 
   
 };
