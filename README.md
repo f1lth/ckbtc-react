@@ -4,7 +4,7 @@ This is an example project, intended to demonstrate how an app developer might i
 
 For a non-typescript implementation, see https://github.com/krpeacock/auth-client-demo/tree/vanilla-js
 
-[Live demo](https://vasb2-4yaaa-aaaab-qadoa-cai.ic0.app/)
+[Live demo](https://aupl6-yaaaa-aaaak-ae3eq-cai.icp0.io/)
 
 This is an example showing how to use [@dfinity/auth-client](https://www.npmjs.com/package/@dfinity/auth-client).
 
